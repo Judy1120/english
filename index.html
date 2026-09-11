@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spelling Words 4th Grade 單字大冒險</title>
+  <title>Spelling Words 4th Grade 單字遊戲王</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -12,7 +12,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
-    .animate-bounce-short { animation: bounce 0.5s ease-in-out 1; }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
@@ -152,7 +151,7 @@
         { id: 119, word: "thrilling", translation: "刺激的 / 驚險的" },
         { id: 120, word: "exciting", translation: "令人興奮的" },
         { id: 121, word: "annoyed", translation: "感到惱怒的" },
-        { id: 122, word: "bother", translation: "打擾 / 煩惱" },
+        { id: 122, word: "bother", translation: "打擾 / 煩腦" },
         { id: 123, word: "attitude", translation: "態度" },
         { id: 124, word: "mindset", translation: "心態 / 思維模式" },
         { id: 125, word: "commotion", translation: "騷動 / 混亂" }
@@ -191,14 +190,30 @@
     function App() {
       const [currentCategory, setCurrentCategory] = useState("1 ~ 25");
       const [mode, setMode] = useState("list");
-      const [currentIndex, setCurrentIndex] = useState(0);
+
+      // 記憶閃卡狀態
+      const [flashIndex, setFlashIndex] = useState(0);
+      const [isFlipped, setIsFlipped] = useState(false);
+
+      // 選擇題測驗狀態
+      const [quizIndex, setQuizIndex] = useState(0);
       const [options, setOptions] = useState([]);
       const [selectedAnswer, setSelectedAnswer] = useState(null);
       const [score, setScore] = useState(0);
-      const [streak, setStreak] = useState(0);
+
+      // 拼字大考驗狀態
+      const [spellIndex, setSpellIndex] = useState(0);
+      const [inputVal, setInputVal] = useState("");
+      const [spellResult, setSpellResult] = useState(null);
+
+      // 翻牌對對碰狀態
+      const [matchCards, setMatchCards] = useState([]);
+      const [selectedCard, setSelectedCard] = useState(null);
+      const [matchedIds, setMatchedIds] = useState([]);
 
       const words = ALL_WORDS[currentCategory] || [];
 
+      // 語音發音功能
       const speakWord = (text) => {
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
@@ -209,74 +224,97 @@
         }
       };
 
-      const generateQuizOptions = (index) => {
-        const correctWord = words[index];
-        if (!correctWord) return;
-
-        let allOtherWords = [];
-        Object.values(ALL_WORDS).forEach(group => {
-          group.forEach(w => {
-            if (w.word !== correctWord.word) allOtherWords.push(w);
-          });
+      // 初始化翻牌對對碰
+      const initMatchingGame = () => {
+        const sampleWords = [...words].sort(() => 0.5 - Math.random()).slice(0, 4);
+        let cards = [];
+        sampleWords.forEach(item => {
+          cards.push({ id: item.id, type: 'en', content: item.word, key: item.id + '-en' });
+          cards.push({ id: item.id, type: 'zh', content: item.translation, key: item.id + '-zh' });
         });
+        setMatchCards(cards.sort(() => 0.5 - Math.random()));
+        setMatchedIds([]);
+        setSelectedCard(null);
+      };
 
-        const shuffledOthers = [...allOtherWords].sort(() => 0.5 - Math.random());
-        const selectedChoices = [correctWord, ...shuffledOthers.slice(0, 3)].sort(() => 0.5 - Math.random());
-        setOptions(selectedChoices);
+      // 產生選擇題選項
+      const generateQuizOptions = (idx) => {
+        const correctWord = words[idx];
+        if (!correctWord) return;
+        let pool = [];
+        Object.values(ALL_WORDS).forEach(group => {
+          group.forEach(w => { if (w.word !== correctWord.word) pool.push(w); });
+        });
+        const choices = [correctWord, ...pool.sort(() => 0.5 - Math.random()).slice(0, 3)].sort(() => 0.5 - Math.random());
+        setOptions(choices);
         setSelectedAnswer(null);
       };
 
       useEffect(() => {
-        if (mode === "quiz") {
-          generateQuizOptions(currentIndex);
-        }
-      }, [currentIndex, mode, currentCategory]);
+        setIsFlipped(false);
+        setFlashIndex(0);
+        setQuizIndex(0);
+        setSpellIndex(0);
+        setInputVal("");
+        setSpellResult(null);
+        if (mode === "choice") generateQuizOptions(0);
+        if (mode === "match") initMatchingGame();
+      }, [mode, currentCategory]);
 
-      const handleAnswer = (choice) => {
-        if (selectedAnswer) return;
-        setSelectedAnswer(choice);
-        const correct = choice.word === words[currentIndex].word;
-        if (correct) {
-          setScore(score + 10);
-          setStreak(streak + 1);
-          speakWord(words[currentIndex].word);
+      useEffect(() => {
+        if (mode === "choice") generateQuizOptions(quizIndex);
+      }, [quizIndex]);
+
+      // 處理對對碰點擊
+      const handleCardClick = (card) => {
+        if (matchedIds.includes(card.id)) return;
+        if (!selectedCard) {
+          setSelectedCard(card);
+          if (card.type === 'en') speakWord(card.content);
         } else {
-          setStreak(0);
+          if (selectedCard.key === card.key) return;
+          if (selectedCard.id === card.id && selectedCard.type !== card.type) {
+            setMatchedIds([...matchedIds, card.id]);
+            setSelectedCard(null);
+            speakWord(words.find(w => w.id === card.id)?.word || "");
+          } else {
+            if (card.type === 'en') speakWord(card.content);
+            setSelectedCard(card);
+          }
         }
       };
 
-      const nextQuestion = () => {
-        if (currentIndex < words.length - 1) {
-          setCurrentIndex(currentIndex + 1);
+      // 檢查拼字
+      const handleCheckSpelling = (e) => {
+        e.preventDefault();
+        const correctWord = words[spellIndex].word.trim().toLowerCase();
+        const userTyped = inputVal.trim().toLowerCase();
+        if (userTyped === correctWord) {
+          setSpellResult('correct');
+          speakWord(words[spellIndex].word);
         } else {
-          alert(`恭喜完成！總得分：${score} 分`);
-          setCurrentIndex(0);
-          setScore(0);
-          setStreak(0);
-          setMode("list");
+          setSpellResult('wrong');
         }
       };
 
       return (
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <header className="text-center mb-8">
+          {/* 標題 */}
+          <header className="text-center mb-6">
             <h1 className="text-3xl md:text-4xl font-extrabold text-amber-400 mb-2 tracking-wide">
-              <i className="fa-solid fa-wand-magic-sparkles mr-2"></i>
-              Spelling Words 4th Grade 單字大冒險
+              <i className="fa-solid fa-gamepad mr-2"></i>
+              Spelling Words 4th Grade 單字遊戲王
             </h1>
-            <p className="text-slate-400 text-sm md:text-base">選擇關卡類別，開始學習與測驗！</p>
+            <p className="text-slate-400 text-sm">挑選關卡與模式，挑戰多種趣味單字遊戲！</p>
           </header>
 
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {/* 關卡頁籤 */}
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
             {Object.keys(ALL_WORDS).map((cat) => (
               <button
                 key={cat}
-                onClick={() => {
-                  setCurrentCategory(cat);
-                  setCurrentIndex(0);
-                  setSelectedAnswer(null);
-                }}
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-md ${
+                onClick={() => setCurrentCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all shadow-md ${
                   currentCategory === cat
                     ? "bg-amber-500 text-slate-950 scale-105"
                     : "bg-slate-800 text-slate-300 hover:bg-slate-700"
@@ -287,30 +325,30 @@
             ))}
           </div>
 
-          <div className="flex justify-center gap-4 mb-8">
-            <button
-              onClick={() => setMode("list")}
-              className={`px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 ${
-                mode === "list" ? "bg-indigo-600 text-white" : "bg-slate-800 text-slate-400"
-              }`}
-            >
-              <i className="fa-solid fa-book"></i> 單字列表
-            </button>
-            <button
-              onClick={() => {
-                setMode("quiz");
-                setCurrentIndex(0);
-                setScore(0);
-                setStreak(0);
-              }}
-              className={`px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 ${
-                mode === "quiz" ? "bg-indigo-600 text-white" : "bg-slate-800 text-slate-400"
-              }`}
-            >
-              <i className="fa-solid fa-gamepad"></i> 闖關測驗
-            </button>
+          {/* 遊戲模式選擇 */}
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {[
+              { id: "list", label: "📖 單字列表", color: "indigo" },
+              { id: "flashcard", label: "🃏 記憶閃卡", color: "indigo" },
+              { id: "choice", label: "🎯 選擇題測驗", color: "indigo" },
+              { id: "spelling", label: "✍️ 拼字大考驗", color: "indigo" },
+              { id: "match", label: "🧩 翻牌對對碰", color: "indigo" },
+            ].map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setMode(m.id)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                  mode === m.id
+                    ? "bg-indigo-600 text-white shadow-lg scale-105"
+                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
+                }`}
+              >
+                {m.label}
+              </button>
+            ))}
           </div>
 
+          {/* 模式 1: 單字列表 */}
           {mode === "list" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {words.map((item) => (
@@ -330,7 +368,6 @@
                   <button
                     onClick={() => speakWord(item.word)}
                     className="w-10 h-10 bg-slate-700/80 hover:bg-amber-500 hover:text-slate-950 text-slate-300 rounded-full flex items-center justify-center transition-all"
-                    title="發音"
                   >
                     <i className="fa-solid fa-volume-high"></i>
                   </button>
@@ -339,66 +376,219 @@
             </div>
           )}
 
-          {mode === "quiz" && words.length > 0 && (
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 md:p-8 max-w-xl mx-auto shadow-2xl">
-              <div className="flex justify-between items-center mb-6 text-sm text-slate-400 border-b border-slate-700 pb-4">
-                <span>進度: {currentIndex + 1} / {words.length}</span>
-                <span className="text-amber-400 font-bold">分數: {score}</span>
-                <span className="text-orange-400 font-bold">連勝: 🔥 {streak}</span>
+          {/* 模式 2: 記憶閃卡 */}
+          {mode === "flashcard" && words.length > 0 && (
+            <div className="max-w-md mx-auto text-center">
+              <p className="text-slate-400 text-sm mb-4">卡片 {flashIndex + 1} / {words.length}</p>
+              <div
+                onClick={() => setIsFlipped(!isFlipped)}
+                className="bg-slate-800 border-2 border-amber-500/40 hover:border-amber-400 rounded-3xl p-10 cursor-pointer min-h-[220px] flex flex-col justify-center items-center shadow-2xl transition-all mb-6"
+              >
+                {!isFlipped ? (
+                  <div>
+                    <span className="text-xs text-amber-400 font-bold bg-amber-400/10 px-3 py-1 rounded-full mb-3 inline-block">
+                      No. #{words[flashIndex].id}
+                    </span>
+                    <h2 className="text-3xl font-extrabold text-white">{words[flashIndex].word}</h2>
+                    <p className="text-slate-500 text-xs mt-4">💡 點擊卡片翻面看中文</p>
+                  </div>
+                ) : (
+                  <div>
+                    <span className="text-xs text-indigo-400 font-bold bg-indigo-400/10 px-3 py-1 rounded-full mb-3 inline-block">
+                      中文翻譯
+                    </span>
+                    <h2 className="text-2xl font-bold text-emerald-400">{words[flashIndex].translation}</h2>
+                  </div>
+                )}
               </div>
+              <div className="flex justify-center items-center gap-4">
+                <button
+                  onClick={() => {
+                    setIsFlipped(false);
+                    setFlashIndex((flashIndex - 1 + words.length) % words.length);
+                  }}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 font-bold rounded-xl text-slate-300"
+                >
+                  ◀ 上一個
+                </button>
+                <button
+                  onClick={() => speakWord(words[flashIndex].word)}
+                  className="w-12 h-12 bg-indigo-600 hover:bg-indigo-500 rounded-full flex items-center justify-center text-white text-lg shadow-lg"
+                >
+                  <i className="fa-solid fa-volume-high"></i>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsFlipped(false);
+                    setFlashIndex((flashIndex + 1) % words.length);
+                  }}
+                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 font-bold rounded-xl text-slate-300"
+                >
+                  下一個 ▶
+                </button>
+              </div>
+            </div>
+          )}
 
-              <div className="text-center my-6">
-                <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full">
-                  No. #{words[currentIndex].id}
-                </span>
-                <h2 className="text-3xl font-extrabold text-white mt-4 mb-2 tracking-wide">
-                  {words[currentIndex].word}
+          {/* 模式 3: 選擇題測驗 */}
+          {mode === "choice" && words.length > 0 && (
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-xl mx-auto shadow-2xl">
+              <div className="flex justify-between items-center mb-6 text-sm text-slate-400 border-b border-slate-700 pb-3">
+                <span>進度: {quizIndex + 1} / {words.length}</span>
+                <span className="text-amber-400 font-bold">得分: {score}</span>
+              </div>
+              <div className="text-center my-4">
+                <h2 className="text-3xl font-extrabold text-white tracking-wide mb-2">
+                  {words[quizIndex].word}
                 </h2>
                 <button
-                  onClick={() => speakWord(words[currentIndex].word)}
-                  className="mt-2 px-4 py-1.5 bg-indigo-600/30 text-indigo-300 hover:bg-indigo-600 hover:text-white rounded-full text-sm font-semibold transition-all inline-flex items-center gap-2"
+                  onClick={() => speakWord(words[quizIndex].word)}
+                  className="px-3 py-1 bg-indigo-600/30 text-indigo-300 rounded-full text-xs font-semibold inline-flex items-center gap-1.5"
                 >
                   <i className="fa-solid fa-volume-high"></i> 播放發音
                 </button>
               </div>
-
               <div className="grid grid-cols-1 gap-3 my-6">
                 {options.map((option, idx) => {
                   let btnStyle = "bg-slate-700 text-slate-200 hover:bg-slate-600";
                   if (selectedAnswer) {
-                    if (option.word === words[currentIndex].word) {
-                      btnStyle = "bg-emerald-600 text-white font-bold";
-                    } else if (option.word === selectedAnswer.word) {
-                      btnStyle = "bg-rose-600 text-white";
-                    } else {
-                      btnStyle = "bg-slate-800 text-slate-500 opacity-50";
-                    }
+                    if (option.word === words[quizIndex].word) btnStyle = "bg-emerald-600 text-white font-bold";
+                    else if (option.word === selectedAnswer.word) btnStyle = "bg-rose-600 text-white";
+                    else btnStyle = "bg-slate-800 text-slate-500 opacity-50";
                   }
-
                   return (
                     <button
                       key={idx}
                       disabled={!!selectedAnswer}
-                      onClick={() => handleAnswer(option)}
-                      className={`p-4 rounded-xl text-left font-semibold transition-all flex items-center justify-between ${btnStyle}`}
+                      onClick={() => {
+                        setSelectedAnswer(option);
+                        if (option.word === words[quizIndex].word) {
+                          setScore(score + 10);
+                          speakWord(words[quizIndex].word);
+                        }
+                      }}
+                      className={`p-4 rounded-xl text-left font-semibold transition-all ${btnStyle}`}
                     >
-                      <span>{option.translation}</span>
-                      {selectedAnswer && option.word === words[currentIndex].word && (
-                        <i className="fa-solid fa-circle-check text-white text-lg"></i>
-                      )}
+                      {option.translation}
                     </button>
                   );
                 })}
               </div>
-
               {selectedAnswer && (
-                <div className="mt-6 text-center">
+                <button
+                  onClick={() => {
+                    if (quizIndex < words.length - 1) setQuizIndex(quizIndex + 1);
+                    else {
+                      alert(`測驗結束！總分：${score}`);
+                      setQuizIndex(0);
+                      setScore(0);
+                    }
+                  }}
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl"
+                >
+                  {quizIndex < words.length - 1 ? "下一題 ➔" : "再試一次 🏆"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* 模式 4: 拼字大考驗 */}
+          {mode === "spelling" && words.length > 0 && (
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-xl mx-auto text-center shadow-2xl">
+              <p className="text-slate-400 text-xs mb-2">題目 {spellIndex + 1} / {words.length}</p>
+              <div className="mb-6">
+                <span className="text-2xl font-bold text-amber-400 block mb-2">{words[spellIndex].translation}</span>
+                <button
+                  onClick={() => speakWord(words[spellIndex].word)}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-bold inline-flex items-center gap-2 shadow"
+                >
+                  <i className="fa-solid fa-volume-high"></i> 聽語音提示
+                </button>
+              </div>
+              <form onSubmit={handleCheckSpelling} className="mb-4">
+                <input
+                  type="text"
+                  value={inputVal}
+                  onChange={(e) => setInputVal(e.target.value)}
+                  placeholder="請在此輸入英文單字..."
+                  className="w-full p-4 rounded-xl bg-slate-900 border border-slate-700 text-white text-center text-xl font-bold focus:outline-none focus:border-amber-500 mb-4"
+                />
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg"
+                >
+                  提交答案
+                </button>
+              </form>
+              {spellResult === 'correct' && (
+                <div className="p-4 bg-emerald-600/20 border border-emerald-500/40 rounded-xl mb-4 text-emerald-400 font-bold">
+                  🎉 太棒了！答對了！
+                </div>
+              )}
+              {spellResult === 'wrong' && (
+                <div className="p-4 bg-rose-600/20 border border-rose-500/40 rounded-xl mb-4 text-rose-400 font-bold">
+                  ❌ 再試試看！正確答案是：<span className="text-white underline">{words[spellIndex].word}</span>
+                </div>
+              )}
+              {spellResult && (
+                <button
+                  onClick={() => {
+                    setSpellIndex((spellIndex + 1) % words.length);
+                    setInputVal("");
+                    setSpellResult(null);
+                  }}
+                  className="w-full py-2.5 bg-amber-500 text-slate-950 font-bold rounded-xl"
+                >
+                  下一題 ➔
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* 模式 5: 翻牌對對碰 */}
+          {mode === "match" && (
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-slate-400 text-sm">配對所有英文與中文卡片：</p>
+                <button
+                  onClick={initMatchingGame}
+                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs"
+                >
+                  🔄 重新換一組牌
+                </button>
+              </div>
+
+              {matchedIds.length === 4 ? (
+                <div className="bg-slate-800 border border-amber-500/50 p-8 rounded-2xl shadow-2xl">
+                  <h2 className="text-3xl font-extrabold text-amber-400 mb-2">🏆 恭喜全數配對成功！</h2>
+                  <p className="text-slate-400 mb-6">你已經成功掌握這組單字了。</p>
                   <button
-                    onClick={nextQuestion}
-                    className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg"
+                    onClick={initMatchingGame}
+                    className="px-6 py-3 bg-amber-500 text-slate-950 font-bold rounded-xl shadow-lg hover:bg-amber-400"
                   >
-                    {currentIndex < words.length - 1 ? "下一題 ➔" : "查看結算 🏆"}
+                    再玩一局 ➔
                   </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {matchCards.map((card) => {
+                    const isMatched = matchedIds.includes(card.id);
+                    const isSelected = selectedCard?.key === card.key;
+                    let style = "bg-slate-800 border-slate-700 text-slate-200 hover:border-amber-500/60";
+                    if (isMatched) style = "bg-emerald-900/30 border-emerald-500/40 text-emerald-400 opacity-40 cursor-default";
+                    else if (isSelected) style = "bg-indigo-600 border-indigo-400 text-white scale-105 shadow-lg";
+
+                    return (
+                      <button
+                        key={card.key}
+                        disabled={isMatched}
+                        onClick={() => handleCardClick(card)}
+                        className={`p-6 rounded-2xl border-2 font-bold text-base min-h-[100px] flex items-center justify-center transition-all ${style}`}
+                      >
+                        {card.content}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
