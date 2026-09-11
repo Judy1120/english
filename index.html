@@ -3,601 +3,441 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spelling Words 4th Grade 單字遊戲王</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <title>Grade 4 Spelling Words (1~300)</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
-  </style>
-</head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-
-    const ALL_WORDS = {
-      "1 ~ 25": [
-        { id: 1, word: "clothes", translation: "衣服" },
-        { id: 2, word: "umbrella", translation: "雨傘" },
-        { id: 3, word: "sandwich", translation: "三明治" },
-        { id: 4, word: "milk", translation: "牛奶" },
-        { id: 5, word: "relationship", translation: "關係" },
-        { id: 6, word: "artificial", translation: "人造的 / 人工的" },
-        { id: 7, word: "intelligence", translation: "智慧 / 智力" },
-        { id: 8, word: "refrigerator", translation: "冰箱" },
-        { id: 9, word: "confidence", translation: "信心" },
-        { id: 10, word: "grammar", translation: "語法 / 文法" },
-        { id: 11, word: "illustration", translation: "插圖" },
-        { id: 12, word: "expository", translation: "說明性的" },
-        { id: 13, word: "realistic", translation: "寫實的 / 現實的" },
-        { id: 14, word: "fiction", translation: "小說 / 虛構" },
-        { id: 15, word: "character", translation: "角色 / 性格" },
-        { id: 16, word: "element", translation: "元素 / 要素" },
-        { id: 17, word: "text feature", translation: "文本特徵" },
-        { id: 18, word: "quotation mark", translation: "引號" },
-        { id: 19, word: "event", translation: "事件" },
-        { id: 20, word: "specific", translation: "具體的 / 特定的" },
-        { id: 21, word: "example", translation: "例子 / 範例" },
-        { id: 22, word: "narrator", translation: "旁白 / 敘述者" },
-        { id: 23, word: "author", translation: "作者" },
-        { id: 24, word: "prediction", translation: "預測" },
-        { id: 25, word: "problem", translation: "問題" }
-      ],
-      "26 ~ 50": [
-        { id: 26, word: "solution", translation: "解決方案 / 解答" },
-        { id: 27, word: "cause", translation: "原因 / 起因" },
-        { id: 28, word: "effect", translation: "效果 / 影響" },
-        { id: 29, word: "idiom", translation: "成語 / 慣用語" },
-        { id: 30, word: "synonym", translation: "同義詞" },
-        { id: 31, word: "antonym", translation: "反義詞" },
-        { id: 32, word: "grasshopper", translation: "蚱蜢" },
-        { id: 33, word: "surprise", translation: "驚喜 / 使驚奇" },
-        { id: 34, word: "reunion", translation: "重聚 / 團聚" },
-        { id: 35, word: "adaptation", translation: "改編 / 適應" },
-        { id: 36, word: "sequence", translation: "順序 / 次序" },
-        { id: 37, word: "compare", translation: "比較" },
-        { id: 38, word: "contrast", translation: "對比" },
-        { id: 39, word: "heading", translation: "標題" },
-        { id: 40, word: "diagram", translation: "圖表 / 示意圖" },
-        { id: 41, word: "ancestor", translation: "祖先" },
-        { id: 42, word: "descendant", translation: "後代 / 子孫" },
-        { id: 43, word: "honor", translation: "榮譽 / 尊敬" },
-        { id: 44, word: "respect", translation: "尊重" },
-        { id: 45, word: "despise", translation: "輕視 / 鄙視" },
-        { id: 46, word: "dislike", translation: "不喜歡 / 討厭" },
-        { id: 47, word: "irritation", translation: "惱怒 / 刺激" },
-        { id: 48, word: "annoying", translation: "惱人的 / 討厭的" },
-        { id: 49, word: "endurance", translation: "忍耐力 / 耐力" },
-        { id: 50, word: "strength", translation: "力量 / 優點" }
-      ],
-      "51 ~ 75": [
-        { id: 51, word: "retreat", translation: "撤退 / 退避" },
-        { id: 52, word: "pull back", translation: "拉回 / 撤退" },
-        { id: 53, word: "intensity", translation: "強度 / 烈度" },
-        { id: 54, word: "energy", translation: "能量 / 精力" },
-        { id: 55, word: "forfeit", translation: "放棄 / 喪失" },
-        { id: 56, word: "wrongdoing", translation: "壞事 / 不法行為" },
-        { id: 57, word: "alter", translation: "改變 / 修改" },
-        { id: 58, word: "change", translation: "改變" },
-        { id: 59, word: "collapse", translation: "倒塌 / 崩潰" },
-        { id: 60, word: "fall", translation: "落下 / 跌倒" },
-        { id: 61, word: "crisis", translation: "危機" },
-        { id: 62, word: "emergency", translation: "緊急狀況" },
-        { id: 63, word: "destruction", translation: "破壞 / 毀滅" },
-        { id: 64, word: "destroy", translation: "毀壞 / 破壞" },
-        { id: 65, word: "hazard", translation: "危險 / 危害" },
-        { id: 66, word: "danger", translation: "危險" },
-        { id: 67, word: "severe", translation: "嚴重的 / 嚴厲的" },
-        { id: 68, word: "strong", translation: "強壯的 / 強烈的" },
-        { id: 69, word: "substantial", translation: "大量的 / 實質的" },
-        { id: 70, word: "a lot", translation: "許多 / 大量" },
-        { id: 71, word: "unpredictable", translation: "無法預測的" },
-        { id: 72, word: "surprised", translation: "感到驚訝的" },
-        { id: 73, word: "bouquet", translation: "花束" },
-        { id: 74, word: "flower", translation: "花" },
-        { id: 75, word: "emotion", translation: "情緒 / 情感" }
-      ],
-      "76 ~ 100": [
-        { id: 76, word: "feeling", translation: "感覺 / 情感" },
-        { id: 77, word: "encircle", translation: "環繞 / 包圍" },
-        { id: 78, word: "surround", translation: "圍繞 / 包圍" },
-        { id: 79, word: "express", translation: "表達" },
-        { id: 80, word: "show", translation: "展示 / 顯示" },
-        { id: 81, word: "fussy", translation: "挑剔的" },
-        { id: 82, word: "picky", translation: "挑剔的" },
-        { id: 83, word: "portrait", translation: "肖像 / 人像" },
-        { id: 84, word: "likeness", translation: "相似 / 肖像" },
-        { id: 85, word: "sparkle", translation: "閃爍 / 火花" },
-        { id: 86, word: "twinkle", translation: "閃爍 / 發光" },
-        { id: 87, word: "whirl", translation: "旋轉 / 迴旋" },
-        { id: 88, word: "spin", translation: "旋轉" },
-        { id: 89, word: "camouflage", translation: "偽裝 / 迷彩" },
-        { id: 90, word: "blend", translation: "混合 / 融入" },
-        { id: 91, word: "dribble", translation: "運球 / 滴下" },
-        { id: 92, word: "trickle", translation: "滴流 / 細流" },
-        { id: 93, word: "extraordinary", translation: "非凡的 / 特殊的" },
-        { id: 94, word: "unusual", translation: "不尋常的" },
-        { id: 95, word: "poisonous", translation: "有毒的" },
-        { id: 96, word: "jeopardy", translation: "危險 / 風險" },
-        { id: 97, word: "pounce", translation: "猛撲" },
-        { id: 98, word: "down", translation: "向下" },
-        { id: 99, word: "predator", translation: "掠食者" },
-        { id: 100, word: "hunt", translation: "打獵 / 獵捕" }
-      ],
-      "101 ~ 125": [
-        { id: 101, word: "prey", translation: "獵物" },
-        { id: 102, word: "victim", translation: "受害者" },
-        { id: 103, word: "vibration", translation: "震動" },
-        { id: 104, word: "movement", translation: "運動 / 移動" },
-        { id: 105, word: "accelerate", translation: "加速" },
-        { id: 106, word: "increase", translation: "增加" },
-        { id: 107, word: "advantage", translation: "優勢 / 好處" },
-        { id: 108, word: "benefit", translation: "好處 / 利益" },
-        { id: 109, word: "capability", translation: "能力" },
-        { id: 110, word: "ability", translation: "能力" },
-        { id: 111, word: "friction", translation: "摩擦力" },
-        { id: 112, word: "resistance", translation: "阻力 / 抵抗" },
-        { id: 113, word: "gravity", translation: "地心引力 / 重力" },
-        { id: 114, word: "downward", translation: "向下的" },
-        { id: 115, word: "identity", translation: "身分" },
-        { id: 116, word: "personal", translation: "個人的" },
-        { id: 117, word: "inquiry", translation: "詢問 / 調查" },
-        { id: 118, word: "search", translation: "搜尋 / 尋找" },
-        { id: 119, word: "thrilling", translation: "刺激的 / 驚險的" },
-        { id: 120, word: "exciting", translation: "令人興奮的" },
-        { id: 121, word: "annoyed", translation: "感到惱怒的" },
-        { id: 122, word: "bother", translation: "打擾 / 煩腦" },
-        { id: 123, word: "attitude", translation: "態度" },
-        { id: 124, word: "mindset", translation: "心態 / 思維模式" },
-        { id: 125, word: "commotion", translation: "騷動 / 混亂" }
-      ],
-      "126 ~ 152": [
-        { id: 126, word: "noise", translation: "噪音" },
-        { id: 127, word: "cranky", translation: "脾氣暴躁的" },
-        { id: 128, word: "grumpy", translation: "脾氣暴躁的" },
-        { id: 129, word: "familiar", translation: "熟悉的" },
-        { id: 130, word: "usual", translation: "通常的 / 習慣的" },
-        { id: 131, word: "frustrated", translation: "感到沮喪的" },
-        { id: 132, word: "calendar", translation: "日曆" },
-        { id: 133, word: "selfish", translation: "自私的" },
-        { id: 134, word: "not sharing", translation: "不願分享" },
-        { id: 135, word: "specialty", translation: "特長 / 專業" },
-        { id: 136, word: "talent", translation: "天賦 / 才能" },
-        { id: 137, word: "archaeology", translation: "考古學" },
-        { id: 138, word: "excavation", translation: "挖掘 / 開掘" },
-        { id: 139, word: "document", translation: "文件 / 記錄" },
-        { id: 140, word: "record", translation: "紀錄 / 記錄" },
-        { id: 141, word: "era", translation: "時代 / 紀元" },
-        { id: 142, word: "epoch", translation: "時代 / 新紀元" },
-        { id: 143, word: "evidence", translation: "證據" },
-        { id: 144, word: "confirmation", translation: "確認 / 證實" },
-        { id: 145, word: "expedition", translation: "遠征 / 探險" },
-        { id: 146, word: "voyage", translation: "航海 / 航行" },
-        { id: 147, word: "permanent", translation: "永久的" },
-        { id: 148, word: "forever", translation: "永遠" },
-        { id: 149, word: "tremendous", translation: "巨大的 / 極大的" },
-        { id: 150, word: "enormous", translation: "巨大的" },
-        { id: 151, word: "uncover", translation: "揭開 / 發現" },
-        { id: 152, word: "expose", translation: "暴露 / 揭露" }
-      ]
-    };
-
-    function App() {
-      const [currentCategory, setCurrentCategory] = useState("1 ~ 25");
-      const [mode, setMode] = useState("list");
-
-      // 記憶閃卡狀態
-      const [flashIndex, setFlashIndex] = useState(0);
-      const [isFlipped, setIsFlipped] = useState(false);
-
-      // 選擇題測驗狀態
-      const [quizIndex, setQuizIndex] = useState(0);
-      const [options, setOptions] = useState([]);
-      const [selectedAnswer, setSelectedAnswer] = useState(null);
-      const [score, setScore] = useState(0);
-
-      // 拼字大考驗狀態
-      const [spellIndex, setSpellIndex] = useState(0);
-      const [inputVal, setInputVal] = useState("");
-      const [spellResult, setSpellResult] = useState(null);
-
-      // 翻牌對對碰狀態
-      const [matchCards, setMatchCards] = useState([]);
-      const [selectedCard, setSelectedCard] = useState(null);
-      const [matchedIds, setMatchedIds] = useState([]);
-
-      const words = ALL_WORDS[currentCategory] || [];
-
-      // 語音發音功能
-      const speakWord = (text) => {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = 'en-US';
-          utterance.rate = 0.85;
-          window.speechSynthesis.speak(utterance);
-        }
-      };
-
-      // 初始化翻牌對對碰
-      const initMatchingGame = () => {
-        const sampleWords = [...words].sort(() => 0.5 - Math.random()).slice(0, 4);
-        let cards = [];
-        sampleWords.forEach(item => {
-          cards.push({ id: item.id, type: 'en', content: item.word, key: item.id + '-en' });
-          cards.push({ id: item.id, type: 'zh', content: item.translation, key: item.id + '-zh' });
-        });
-        setMatchCards(cards.sort(() => 0.5 - Math.random()));
-        setMatchedIds([]);
-        setSelectedCard(null);
-      };
-
-      // 產生選擇題選項
-      const generateQuizOptions = (idx) => {
-        const correctWord = words[idx];
-        if (!correctWord) return;
-        let pool = [];
-        Object.values(ALL_WORDS).forEach(group => {
-          group.forEach(w => { if (w.word !== correctWord.word) pool.push(w); });
-        });
-        const choices = [correctWord, ...pool.sort(() => 0.5 - Math.random()).slice(0, 3)].sort(() => 0.5 - Math.random());
-        setOptions(choices);
-        setSelectedAnswer(null);
-      };
-
-      useEffect(() => {
-        setIsFlipped(false);
-        setFlashIndex(0);
-        setQuizIndex(0);
-        setSpellIndex(0);
-        setInputVal("");
-        setSpellResult(null);
-        if (mode === "choice") generateQuizOptions(0);
-        if (mode === "match") initMatchingGame();
-      }, [mode, currentCategory]);
-
-      useEffect(() => {
-        if (mode === "choice") generateQuizOptions(quizIndex);
-      }, [quizIndex]);
-
-      // 處理對對碰點擊
-      const handleCardClick = (card) => {
-        if (matchedIds.includes(card.id)) return;
-        if (!selectedCard) {
-          setSelectedCard(card);
-          if (card.type === 'en') speakWord(card.content);
-        } else {
-          if (selectedCard.key === card.key) return;
-          if (selectedCard.id === card.id && selectedCard.type !== card.type) {
-            setMatchedIds([...matchedIds, card.id]);
-            setSelectedCard(null);
-            speakWord(words.find(w => w.id === card.id)?.word || "");
-          } else {
-            if (card.type === 'en') speakWord(card.content);
-            setSelectedCard(card);
-          }
-        }
-      };
-
-      // 檢查拼字
-      const handleCheckSpelling = (e) => {
-        e.preventDefault();
-        const correctWord = words[spellIndex].word.trim().toLowerCase();
-        const userTyped = inputVal.trim().toLowerCase();
-        if (userTyped === correctWord) {
-          setSpellResult('correct');
-          speakWord(words[spellIndex].word);
-        } else {
-          setSpellResult('wrong');
-        }
-      };
-
-      return (
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* 標題 */}
-          <header className="text-center mb-6">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-amber-400 mb-2 tracking-wide">
-              <i className="fa-solid fa-gamepad mr-2"></i>
-              Spelling Words 4th Grade 單字遊戲王
-            </h1>
-            <p className="text-slate-400 text-sm">挑選關卡與模式，挑戰多種趣味單字遊戲！</p>
-          </header>
-
-          {/* 關卡頁籤 */}
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {Object.keys(ALL_WORDS).map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCurrentCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all shadow-md ${
-                  currentCategory === cat
-                    ? "bg-amber-500 text-slate-950 scale-105"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                }`}
-              >
-                No. {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* 遊戲模式選擇 */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {[
-              { id: "list", label: "📖 單字列表", color: "indigo" },
-              { id: "flashcard", label: "🃏 記憶閃卡", color: "indigo" },
-              { id: "choice", label: "🎯 選擇題測驗", color: "indigo" },
-              { id: "spelling", label: "✍️ 拼字大考驗", color: "indigo" },
-              { id: "match", label: "🧩 翻牌對對碰", color: "indigo" },
-            ].map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setMode(m.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                  mode === m.id
-                    ? "bg-indigo-600 text-white shadow-lg scale-105"
-                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
-                }`}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
-
-          {/* 模式 1: 單字列表 */}
-          {mode === "list" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {words.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-slate-800 border border-slate-700/60 p-4 rounded-xl flex items-center justify-between hover:border-amber-500/50 transition-all shadow-md"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-md">
-                      #{item.id}
-                    </span>
-                    <div>
-                      <h3 className="text-lg font-bold text-white tracking-wide">{item.word}</h3>
-                      <p className="text-slate-400 text-sm">{item.translation}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => speakWord(item.word)}
-                    className="w-10 h-10 bg-slate-700/80 hover:bg-amber-500 hover:text-slate-950 text-slate-300 rounded-full flex items-center justify-center transition-all"
-                  >
-                    <i className="fa-solid fa-volume-high"></i>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* 模式 2: 記憶閃卡 */}
-          {mode === "flashcard" && words.length > 0 && (
-            <div className="max-w-md mx-auto text-center">
-              <p className="text-slate-400 text-sm mb-4">卡片 {flashIndex + 1} / {words.length}</p>
-              <div
-                onClick={() => setIsFlipped(!isFlipped)}
-                className="bg-slate-800 border-2 border-amber-500/40 hover:border-amber-400 rounded-3xl p-10 cursor-pointer min-h-[220px] flex flex-col justify-center items-center shadow-2xl transition-all mb-6"
-              >
-                {!isFlipped ? (
-                  <div>
-                    <span className="text-xs text-amber-400 font-bold bg-amber-400/10 px-3 py-1 rounded-full mb-3 inline-block">
-                      No. #{words[flashIndex].id}
-                    </span>
-                    <h2 className="text-3xl font-extrabold text-white">{words[flashIndex].word}</h2>
-                    <p className="text-slate-500 text-xs mt-4">💡 點擊卡片翻面看中文</p>
-                  </div>
-                ) : (
-                  <div>
-                    <span className="text-xs text-indigo-400 font-bold bg-indigo-400/10 px-3 py-1 rounded-full mb-3 inline-block">
-                      中文翻譯
-                    </span>
-                    <h2 className="text-2xl font-bold text-emerald-400">{words[flashIndex].translation}</h2>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-center items-center gap-4">
-                <button
-                  onClick={() => {
-                    setIsFlipped(false);
-                    setFlashIndex((flashIndex - 1 + words.length) % words.length);
-                  }}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 font-bold rounded-xl text-slate-300"
-                >
-                  ◀ 上一個
-                </button>
-                <button
-                  onClick={() => speakWord(words[flashIndex].word)}
-                  className="w-12 h-12 bg-indigo-600 hover:bg-indigo-500 rounded-full flex items-center justify-center text-white text-lg shadow-lg"
-                >
-                  <i className="fa-solid fa-volume-high"></i>
-                </button>
-                <button
-                  onClick={() => {
-                    setIsFlipped(false);
-                    setFlashIndex((flashIndex + 1) % words.length);
-                  }}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 font-bold rounded-xl text-slate-300"
-                >
-                  下一個 ▶
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* 模式 3: 選擇題測驗 */}
-          {mode === "choice" && words.length > 0 && (
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-xl mx-auto shadow-2xl">
-              <div className="flex justify-between items-center mb-6 text-sm text-slate-400 border-b border-slate-700 pb-3">
-                <span>進度: {quizIndex + 1} / {words.length}</span>
-                <span className="text-amber-400 font-bold">得分: {score}</span>
-              </div>
-              <div className="text-center my-4">
-                <h2 className="text-3xl font-extrabold text-white tracking-wide mb-2">
-                  {words[quizIndex].word}
-                </h2>
-                <button
-                  onClick={() => speakWord(words[quizIndex].word)}
-                  className="px-3 py-1 bg-indigo-600/30 text-indigo-300 rounded-full text-xs font-semibold inline-flex items-center gap-1.5"
-                >
-                  <i className="fa-solid fa-volume-high"></i> 播放發音
-                </button>
-              </div>
-              <div className="grid grid-cols-1 gap-3 my-6">
-                {options.map((option, idx) => {
-                  let btnStyle = "bg-slate-700 text-slate-200 hover:bg-slate-600";
-                  if (selectedAnswer) {
-                    if (option.word === words[quizIndex].word) btnStyle = "bg-emerald-600 text-white font-bold";
-                    else if (option.word === selectedAnswer.word) btnStyle = "bg-rose-600 text-white";
-                    else btnStyle = "bg-slate-800 text-slate-500 opacity-50";
-                  }
-                  return (
-                    <button
-                      key={idx}
-                      disabled={!!selectedAnswer}
-                      onClick={() => {
-                        setSelectedAnswer(option);
-                        if (option.word === words[quizIndex].word) {
-                          setScore(score + 10);
-                          speakWord(words[quizIndex].word);
-                        }
-                      }}
-                      className={`p-4 rounded-xl text-left font-semibold transition-all ${btnStyle}`}
-                    >
-                      {option.translation}
-                    </button>
-                  );
-                })}
-              </div>
-              {selectedAnswer && (
-                <button
-                  onClick={() => {
-                    if (quizIndex < words.length - 1) setQuizIndex(quizIndex + 1);
-                    else {
-                      alert(`測驗結束！總分：${score}`);
-                      setQuizIndex(0);
-                      setScore(0);
-                    }
-                  }}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl"
-                >
-                  {quizIndex < words.length - 1 ? "下一題 ➔" : "再試一次 🏆"}
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* 模式 4: 拼字大考驗 */}
-          {mode === "spelling" && words.length > 0 && (
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-xl mx-auto text-center shadow-2xl">
-              <p className="text-slate-400 text-xs mb-2">題目 {spellIndex + 1} / {words.length}</p>
-              <div className="mb-6">
-                <span className="text-2xl font-bold text-amber-400 block mb-2">{words[spellIndex].translation}</span>
-                <button
-                  onClick={() => speakWord(words[spellIndex].word)}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-bold inline-flex items-center gap-2 shadow"
-                >
-                  <i className="fa-solid fa-volume-high"></i> 聽語音提示
-                </button>
-              </div>
-              <form onSubmit={handleCheckSpelling} className="mb-4">
-                <input
-                  type="text"
-                  value={inputVal}
-                  onChange={(e) => setInputVal(e.target.value)}
-                  placeholder="請在此輸入英文單字..."
-                  className="w-full p-4 rounded-xl bg-slate-900 border border-slate-700 text-white text-center text-xl font-bold focus:outline-none focus:border-amber-500 mb-4"
-                />
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg"
-                >
-                  提交答案
-                </button>
-              </form>
-              {spellResult === 'correct' && (
-                <div className="p-4 bg-emerald-600/20 border border-emerald-500/40 rounded-xl mb-4 text-emerald-400 font-bold">
-                  🎉 太棒了！答對了！
-                </div>
-              )}
-              {spellResult === 'wrong' && (
-                <div className="p-4 bg-rose-600/20 border border-rose-500/40 rounded-xl mb-4 text-rose-400 font-bold">
-                  ❌ 再試試看！正確答案是：<span className="text-white underline">{words[spellIndex].word}</span>
-                </div>
-              )}
-              {spellResult && (
-                <button
-                  onClick={() => {
-                    setSpellIndex((spellIndex + 1) % words.length);
-                    setInputVal("");
-                    setSpellResult(null);
-                  }}
-                  className="w-full py-2.5 bg-amber-500 text-slate-950 font-bold rounded-xl"
-                >
-                  下一題 ➔
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* 模式 5: 翻牌對對碰 */}
-          {mode === "match" && (
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-slate-400 text-sm">配對所有英文與中文卡片：</p>
-                <button
-                  onClick={initMatchingGame}
-                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs"
-                >
-                  🔄 重新換一組牌
-                </button>
-              </div>
-
-              {matchedIds.length === 4 ? (
-                <div className="bg-slate-800 border border-amber-500/50 p-8 rounded-2xl shadow-2xl">
-                  <h2 className="text-3xl font-extrabold text-amber-400 mb-2">🏆 恭喜全數配對成功！</h2>
-                  <p className="text-slate-400 mb-6">你已經成功掌握這組單字了。</p>
-                  <button
-                    onClick={initMatchingGame}
-                    className="px-6 py-3 bg-amber-500 text-slate-950 font-bold rounded-xl shadow-lg hover:bg-amber-400"
-                  >
-                    再玩一局 ➔
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {matchCards.map((card) => {
-                    const isMatched = matchedIds.includes(card.id);
-                    const isSelected = selectedCard?.key === card.key;
-                    let style = "bg-slate-800 border-slate-700 text-slate-200 hover:border-amber-500/60";
-                    if (isMatched) style = "bg-emerald-900/30 border-emerald-500/40 text-emerald-400 opacity-40 cursor-default";
-                    else if (isSelected) style = "bg-indigo-600 border-indigo-400 text-white scale-105 shadow-lg";
-
-                    return (
-                      <button
-                        key={card.key}
-                        disabled={isMatched}
-                        onClick={() => handleCardClick(card)}
-                        className={`p-6 rounded-2xl border-2 font-bold text-base min-h-[100px] flex items-center justify-center transition-all ${style}`}
-                      >
-                        {card.content}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      );
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --accent: #10b981;
+      --danger: #ef4444;
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    .header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 800px; }
+    h1 { margin: 0 0 10px 0; color: #312e81; font-size: 1.8rem; }
+    
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
+    select, button { padding: 10px 16px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+    button { background-color: var(--primary); color: white; border: none; font-weight: 600; }
+    button:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    select { font-weight: 500; color: #334155; }
+
+    .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; width: 100%; max-width: 800px; }
+    .tab-btn { background: #e2e8f0; color: #475569; border: none; font-size: 0.95rem; }
+    .tab-btn.active { background: var(--primary); color: white; }
+
+    .game-area { width: 100%; max-width: 800px; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    /* Mode 1: Flashcard */
+    .flashcard { width: 320px; height: 220px; background: white; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.3s; position: relative; padding: 20px; text-align: center; }
+    .flashcard .num-tag { position: absolute; top: 12px; left: 15px; font-size: 0.85rem; color: #64748b; font-weight: bold; }
+    .flashcard .speaker-btn { position: absolute; top: 10px; right: 12px; background: #e0e7ff; color: var(--primary); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .flashcard .word { font-size: 2rem; font-weight: bold; color: #1e1b4b; margin-bottom: 10px; }
+    .flashcard .translation { font-size: 1.4rem; color: #059669; font-weight: 600; min-height: 2rem; }
+
+    /* Mode 2: Quiz */
+    .quiz-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+    .option-btn { background: #f1f5f9; color: #1e293b; border: 2px solid #e2e8f0; padding: 14px; border-radius: 10px; font-size: 1.1rem; }
+    .option-btn:hover { background: #e2e8f0; }
+
+    /* Mode 3: Spelling */
+    .spelling-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+    .spelling-input { font-size: 1.4rem; padding: 10px; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; width: 80%; margin: 15px 0; outline: none; }
+    .spelling-input:focus { border-color: var(--primary); }
+
+    /* Mode 4: Match Game */
+    .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 600px; }
+    .match-item { background: white; border: 2px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; font-size: 1.1rem; cursor: pointer; font-weight: 500; }
+    .match-item.selected { border-color: var(--primary); background: #e0e7ff; }
+    .match-item.matched { visibility: hidden; }
+
+    /* Mode 5: Memory Flip */
+    .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 650px; }
+    .memory-card { height: 90px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; cursor: pointer; text-align: center; padding: 5px; user-select: none; }
+    .memory-card.flipped { background: white; color: var(--text); border: 2px solid var(--primary); }
+    .memory-card.matched { background: #d1fae5; color: #065f46; border: 2px solid #10b981; cursor: default; }
+
+    .score-board { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #4338ca; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Grade 4 English Spelling Master 🌟</h1>
+  </div>
+
+  <div class="controls">
+    <label for="group-select" style="align-self: center; font-weight: bold;">選擇單字範圍：</label>
+    <select id="group-select" onchange="changeGroup()">
+      <!-- Options will be dynamically populated -->
+    </select>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchMode(1)">📇 單字卡</button>
+    <button class="tab-btn" onclick="switchMode(2)">🎯 四選一測驗</button>
+    <button class="tab-btn" onclick="switchMode(3)">✍️ 看中文拼字</button>
+    <button class="tab-btn" onclick="switchMode(4)">🧩 快速連連看</button>
+    <button class="tab-btn" onclick="switchMode(5)">🃏 翻牌記憶遊戲</button>
+  </div>
+
+  <div class="game-area" id="game-container">
+    <!-- Game Mode Content Rendered Here -->
+  </div>
+
+  <script>
+    // Complete 300 words dataset (25 per group)
+    const ALL_WORDS = {
+      "1 ~ 25": [{"num": 1, "en": "clothes", "zh": "衣服"}, {"num": 2, "en": "umbrella", "zh": "雨傘"}, {"num": 3, "en": "sandwich", "zh": "三明治"}, {"num": 4, "en": "milk", "zh": "牛奶"}, {"num": 5, "en": "relationship", "zh": "關係"}, {"num": 6, "en": "artificial", "zh": "人造的 / 人工的"}, {"num": 7, "en": "intelligence", "zh": "智慧 / 智力"}, {"num": 8, "en": "refrigerator", "zh": "冰箱"}, {"num": 9, "en": "confidence", "zh": "信心"}, {"num": 10, "en": "grammar", "zh": "語法 / 文法"}, {"num": 11, "en": "illustration", "zh": "插圖"}, {"num": 12, "en": "expository", "zh": "說明性的"}, {"num": 13, "en": "realistic", "zh": "寫實的 / 現實的"}, {"num": 14, "en": "fiction", "zh": "小說 / 虛構"}, {"num": 15, "en": "character", "zh": "角色 / 性格"}, {"num": 16, "en": "element", "zh": "元素 / 要素"}, {"num": 17, "en": "text feature", "zh": "文本特徵"}, {"num": 18, "en": "quotation mark", "zh": "引號"}, {"num": 19, "en": "event", "zh": "事件"}, {"num": 20, "en": "specific", "zh": "具體的 / 特定的"}, {"num": 21, "en": "example", "zh": "例子 / 範例"}, {"num": 22, "en": "narrator", "zh": "旁白 / 敘述者"}, {"num": 23, "en": "author", "zh": "作者"}, {"num": 24, "en": "prediction", "zh": "預測"}, {"num": 25, "en": "problem", "zh": "問題"}],
+      "26 ~ 50": [{"num": 26, "en": "solution", "zh": "解決方案 / 解答"}, {"num": 27, "en": "cause", "zh": "原因 / 起因"}, {"num": 28, "en": "effect", "zh": "效果 / 影響"}, {"num": 29, "en": "idiom", "zh": "成語 / 慣用語"}, {"num": 30, "en": "synonym", "zh": "同義詞"}, {"num": 31, "en": "antonym", "zh": "反義詞"}, {"num": 32, "en": "grasshopper", "zh": "蚱蜢"}, {"num": 33, "en": "surprise", "zh": "驚喜 / 使驚奇"}, {"num": 34, "en": "reunion", "zh": "重聚 / 團聚"}, {"num": 35, "en": "adaptation", "zh": "改編 / 適應"}, {"num": 36, "en": "sequence", "zh": "順序 / 次序"}, {"num": 37, "en": "compare", "zh": "比較"}, {"num": 38, "en": "contrast", "zh": "對比"}, {"num": 39, "en": "heading", "zh": "標題"}, {"num": 40, "en": "diagram", "zh": "圖表 / 示意圖"}, {"num": 41, "en": "ancestor", "zh": "祖先"}, {"num": 42, "en": "descendant", "zh": "後代 / 子孫"}, {"num": 43, "en": "honor", "zh": "榮譽 / 尊敬"}, {"num": 44, "en": "respect", "zh": "尊重"}, {"num": 45, "en": "despise", "zh": "輕視 / 鄙視"}, {"num": 46, "en": "dislike", "zh": "不喜歡 / 討厭"}, {"num": 47, "en": "irritation", "zh": "惱怒 / 刺激"}, {"num": 48, "en": "annoying", "zh": "惱人的 / 討厭的"}, {"num": 49, "en": "endurance", "zh": "忍耐力 / 耐力"}, {"num": 50, "en": "strength", "zh": "力量 / 優點"}],
+      "51 ~ 75": [{"num": 51, "en": "retreat", "zh": "撤退 / 退避"}, {"num": 52, "en": "pull back", "zh": "拉回 / 撤退"}, {"num": 53, "en": "intensity", "zh": "強度 / 烈度"}, {"num": 54, "en": "energy", "zh": "能量 / 精力"}, {"num": 55, "en": "forfeit", "zh": "放棄 / 喪失"}, {"num": 56, "en": "wrongdoing", "zh": "壞事 / 不法行為"}, {"num": 57, "en": "alter", "zh": "改變 / 修改"}, {"num": 58, "en": "change", "zh": "改變"}, {"num": 59, "en": "collapse", "zh": "倒塌 / 崩潰"}, {"num": 60, "en": "fall", "zh": "落下 / 跌倒"}, {"num": 61, "en": "crisis", "zh": "危機"}, {"num": 62, "en": "emergency", "zh": "緊急狀況"}, {"num": 63, "en": "destruction", "zh": "破壞 / 毀滅"}, {"num": 64, "en": "destroy", "zh": "毀壞 / 破壞"}, {"num": 65, "en": "hazard", "zh": "危險 / 危害"}, {"num": 66, "en": "danger", "zh": "危險"}, {"num": 67, "en": "severe", "zh": "嚴重的 / 嚴厲的"}, {"num": 68, "en": "strong", "zh": "強壯的 / 強烈的"}, {"num": 69, "en": "substantial", "zh": "大量的 / 實質的"}, {"num": 70, "en": "a lot", "zh": "許多 / 大量"}, {"num": 71, "en": "unpredictable", "zh": "無法預測的"}, {"num": 72, "en": "surprised", "zh": "感到驚訝的"}, {"num": 73, "en": "bouquet", "zh": "花束"}, {"num": 74, "en": "flower", "zh": "花"}, {"num": 75, "en": "emotion", "zh": "情緒 / 情感"}],
+      "76 ~ 100": [{"num": 76, "en": "feeling", "zh": "感覺 / 情感"}, {"num": 77, "en": "encircle", "zh": "環繞 / 包圍"}, {"num": 78, "en": "surround", "zh": "圍繞 / 包圍"}, {"num": 79, "en": "express", "zh": "表達"}, {"num": 80, "en": "show", "zh": "展示 / 顯示"}, {"num": 81, "en": "fussy", "zh": "挑剔的"}, {"num": 82, "en": "picky", "zh": "挑剔的"}, {"num": 83, "en": "portrait", "zh": "肖像 / 人像"}, {"num": 84, "en": "likeness", "zh": "相似 / 肖像"}, {"num": 85, "en": "sparkle", "zh": "閃爍 / 火花"}, {"num": 86, "en": "twinkle", "zh": "閃爍 / 發光"}, {"num": 87, "en": "whirl", "zh": "旋轉 / 迴旋"}, {"num": 88, "en": "spin", "zh": "旋轉"}, {"num": 89, "en": "camouflage", "zh": "偽裝 / 迷彩"}, {"num": 90, "en": "blend", "zh": "混合 / 融入"}, {"num": 91, "en": "dribble", "zh": "運球 / 滴下"}, {"num": 92, "en": "trickle", "zh": "滴流 / 細流"}, {"num": 93, "en": "extraordinary", "zh": "非凡的 / 特殊的"}, {"num": 94, "en": "unusual", "zh": "不尋常的"}, {"num": 95, "en": "poisonous", "zh": "有毒的"}, {"num": 96, "en": "jeopardy", "zh": "危險 / 風險"}, {"num": 97, "en": "pounce", "zh": "猛撲"}, {"num": 98, "en": "down", "zh": "向下"}, {"num": 99, "en": "predator", "zh": "掠食者"}, {"num": 100, "en": "hunt", "zh": "打獵 / 獵捕"}],
+      "101 ~ 125": [{"num": 101, "en": "prey", "zh": "獵物"}, {"num": 102, "en": "victim", "zh": "受害者"}, {"num": 103, "en": "vibration", "zh": "震動"}, {"num": 104, "en": "movement", "zh": "運動 / 移動"}, {"num": 105, "en": "accelerate", "zh": "加速"}, {"num": 106, "en": "increase", "zh": "增加"}, {"num": 107, "en": "advantage", "zh": "優勢 / 好處"}, {"num": 108, "en": "benefit", "zh": "好處 / 利益"}, {"num": 109, "en": "capability", "zh": "能力"}, {"num": 110, "en": "ability", "zh": "能力"}, {"num": 111, "en": "friction", "zh": "摩擦力"}, {"num": 112, "en": "resistance", "zh": "阻力 / 抵抗"}, {"num": 113, "en": "gravity", "zh": "地心引力 / 重力"}, {"num": 114, "en": "downward", "zh": "向下的"}, {"num": 115, "en": "identity", "zh": "身分"}, {"num": 116, "en": "personal", "zh": "個人的"}, {"num": 117, "en": "inquiry", "zh": "詢問 / 調查"}, {"num": 118, "en": "search", "zh": "搜尋 / 尋找"}, {"num": 119, "en": "thrilling", "zh": "刺激的 / 驚險的"}, {"num": 120, "en": "exciting", "zh": "令人興奮的"}, {"num": 121, "en": "annoyed", "zh": "感到惱怒的"}, {"num": 122, "en": "bother", "zh": "打擾 / 煩惱"}, {"num": 123, "en": "attitude", "zh": "態度"}, {"num": 124, "en": "mindset", "zh": "心態 / 思維模式"}, {"num": 125, "en": "commotion", "zh": "騷動 / 混亂"}],
+      "126 ~ 150": [{"num": 126, "en": "noise", "zh": "噪音"}, {"num": 127, "en": "cranky", "zh": "脾氣暴躁的"}, {"num": 128, "en": "grumpy", "zh": "脾氣暴躁的"}, {"num": 129, "en": "familiar", "zh": "熟悉的"}, {"num": 130, "en": "usual", "zh": "通常的 / 習慣的"}, {"num": 131, "en": "frustrated", "zh": "感到沮喪的"}, {"num": 132, "en": "calendar", "zh": "日曆"}, {"num": 133, "en": "selfish", "zh": "自私的"}, {"num": 134, "en": "not sharing", "zh": "不願分享"}, {"num": 135, "en": "specialty", "zh": "特長 / 專業"}, {"num": 136, "en": "talent", "zh": "天賦 / 才能"}, {"num": 137, "en": "archaeology", "zh": "考古學"}, {"num": 138, "en": "excavation", "zh": "挖掘 / 開掘"}, {"num": 139, "en": "document", "zh": "文件 / 記錄"}, {"num": 140, "en": "record", "zh": "紀錄 / 記錄"}, {"num": 141, "en": "era", "zh": "時代 / 紀元"}, {"num": 142, "en": "epoch", "zh": "時代 / 新紀元"}, {"num": 143, "en": "evidence", "zh": "證據"}, {"num": 144, "en": "confirmation", "zh": "確認 / 證實"}, {"num": 145, "en": "expedition", "zh": "遠征 / 探險"}, {"num": 146, "en": "voyage", "zh": "航海 / 航行"}, {"num": 147, "en": "permanent", "zh": "永久的"}, {"num": 148, "en": "forever", "zh": "永遠"}, {"num": 149, "en": "tremendous", "zh": "巨大的 / 極大的"}, {"num": 150, "en": "enormous", "zh": "巨大的"}],
+      "151 ~ 175": [{"num": 151, "en": "uncover", "zh": "揭開 / 發現"}, {"num": 152, "en": "expose", "zh": "暴露 / 揭露"}, {"num": 153, "en": "accountable", "zh": "負有責任的"}, {"num": 154, "en": "responsible", "zh": "有責任的"}, {"num": 155, "en": "advise", "zh": "建議 / 勸告"}, {"num": 156, "en": "suggest", "zh": "建議"}, {"num": 157, "en": "desperately", "zh": "拼命地 / 絕望地"}, {"num": 158, "en": "hopeless", "zh": "絕望的 / 無可救藥的"}, {"num": 159, "en": "hesitate", "zh": "猶豫"}, {"num": 160, "en": "pause", "zh": "暫停 / 停頓"}, {"num": 161, "en": "humiliate", "zh": "使屈辱 / 羞辱"}, {"num": 162, "en": "ashamed", "zh": "感到羞恥的"}, {"num": 163, "en": "inspiration", "zh": "靈感 / 啟發"}, {"num": 164, "en": "excite", "zh": "使興奮 / 激勵"}, {"num": 165, "en": "self-esteem", "zh": "自尊心"}, {"num": 166, "en": "confident", "zh": "自信的"}, {"num": 167, "en": "uncomfortably", "zh": "不舒服地 / 尷尬地"}, {"num": 168, "en": "unpleasant", "zh": "令人不快的"}, {"num": 169, "en": "cling", "zh": "緊貼 / 執著"}, {"num": 170, "en": "stick", "zh": "黏住 / 堅持"}, {"num": 171, "en": "dissolve", "zh": "溶解 / 消散"}, {"num": 172, "en": "liquid", "zh": "液體"}, {"num": 173, "en": "gritty", "zh": "沙砂的 / 堅毅的"}, {"num": 174, "en": "texture", "zh": "質地 / 觸感"}, {"num": 175, "en": "humid", "zh": "潮濕的"}],
+      "176 ~ 200": [{"num": 176, "en": "weather", "zh": "天氣"}, {"num": 177, "en": "magnify", "zh": "放大"}, {"num": 178, "en": "enlarge", "zh": "擴大 / 放大"}, {"num": 179, "en": "microscope", "zh": "顯微鏡"}, {"num": 180, "en": "tool", "zh": "工具"}, {"num": 181, "en": "mingle", "zh": "混合 / 交際"}, {"num": 182, "en": "socialize", "zh": "社交 / 交際"}, {"num": 183, "en": "typical", "zh": "典型的"}, {"num": 184, "en": "normal", "zh": "正常的 / 通常的"}, {"num": 185, "en": "settle", "zh": "安頓 / 定居"}, {"num": 186, "en": "settlement", "zh": "定居點 / 解決"}, {"num": 187, "en": "prospector", "zh": "探礦者 / 採礦者"}, {"num": 188, "en": "mineral", "zh": "礦物"}, {"num": 189, "en": "withered", "zh": "枯萎的 / 憔悴的"}, {"num": 190, "en": "dried up", "zh": "乾涸的"}, {"num": 191, "en": "topple", "zh": "傾倒 / 倒塌"}, {"num": 192, "en": "unsteady", "zh": "不穩定的"}, {"num": 193, "en": "plunge", "zh": "驟降 / 俯衝"}, {"num": 194, "en": "drop", "zh": "掉落 / 下降"}, {"num": 195, "en": "shrivel", "zh": "枯萎 / 皺縮"}, {"num": 196, "en": "wrinkled", "zh": "起皺的"}, {"num": 197, "en": "scoff", "zh": "嘲笑 / 嘲弄"}, {"num": 198, "en": "mock", "zh": "嘲弄 / 模仿"}, {"num": 199, "en": "territory", "zh": "領土 / 領域"}, {"num": 200, "en": "claimed area", "zh": "主張的區域 / 領地"}],
+      "201 ~ 225": [{"num": 201, "en": "capable", "zh": "有能力的"}, {"num": 202, "en": "creative", "zh": "有創意的"}, {"num": 203, "en": "generous", "zh": "慷慨的"}, {"num": 204, "en": "honest", "zh": "誠實的"}, {"num": 205, "en": "humble", "zh": "謙虛的"}, {"num": 206, "en": "motivated", "zh": "受激勵的 / 積極的"}, {"num": 207, "en": "polite", "zh": "有禮貌的"}, {"num": 208, "en": "esteem", "zh": "尊重 / 敬重"}, {"num": 209, "en": "liable", "zh": "有責任的"}, {"num": 210, "en": "trustworthy", "zh": "值得信賴的"}, {"num": 211, "en": "power", "zh": "力量 / 電源"}, {"num": 212, "en": "speed", "zh": "速度"}, {"num": 213, "en": "erosion", "zh": "侵蝕"}, {"num": 214, "en": "battery", "zh": "電池"}, {"num": 215, "en": "butte", "zh": "孤峰 / 孤山"}, {"num": 216, "en": "canyon", "zh": "峽谷"}, {"num": 217, "en": "collision", "zh": "碰撞 / 衝突"}, {"num": 218, "en": "conductor", "zh": "導體 / 指揮"}, {"num": 219, "en": "crest", "zh": "波峰 / 頂峰"}, {"num": 220, "en": "drought", "zh": "乾旱"}, {"num": 221, "en": "flood", "zh": "洪水"}, {"num": 222, "en": "fossil", "zh": "化石"}, {"num": 223, "en": "fault", "zh": "斷層 / 缺點"}, {"num": 224, "en": "frequency", "zh": "頻率"}, {"num": 225, "en": "gill", "zh": "鰓"}],
+      "226 ~ 250": [{"num": 226, "en": "heart", "zh": "心臟"}, {"num": 227, "en": "threat", "zh": "威脅"}, {"num": 228, "en": "hydropower", "zh": "水力發電"}, {"num": 229, "en": "insulator", "zh": "絕緣體"}, {"num": 230, "en": "kidney", "zh": "腎臟"}, {"num": 231, "en": "landslide", "zh": "山崩 / 滑坡"}, {"num": 232, "en": "legend", "zh": "傳說 / 圖例"}, {"num": 233, "en": "lung", "zh": "肺"}, {"num": 234, "en": "muscle", "zh": "肌肉"}, {"num": 235, "en": "organ", "zh": "器官 / 風琴"}, {"num": 236, "en": "petroleum", "zh": "石油"}, {"num": 237, "en": "reflect", "zh": "反射 / 反省"}, {"num": 238, "en": "resistor", "zh": "電阻器"}, {"num": 239, "en": "skeleton", "zh": "骨骼 / 骨架"}, {"num": 240, "en": "skin", "zh": "皮膚"}, {"num": 241, "en": "sound", "zh": "聲音"}, {"num": 242, "en": "stomach", "zh": "胃"}, {"num": 243, "en": "system", "zh": "系統"}, {"num": 244, "en": "tissue", "zh": "組織 / 面紙"}, {"num": 245, "en": "trough", "zh": "波谷 / 槽"}, {"num": 246, "en": "tsunami", "zh": "海嘯"}, {"num": 247, "en": "volcano", "zh": "火山"}, {"num": 248, "en": "wave", "zh": "波浪 / 揮手"}, {"num": 249, "en": "wildfire", "zh": "野火"}, {"num": 250, "en": "absorb", "zh": "吸收"}],
+      "251 ~ 275": [{"num": 251, "en": "appear", "zh": "出現"}, {"num": 252, "en": "available", "zh": "可獲得的 / 有空的"}, {"num": 253, "en": "avalanche", "zh": "雪崩"}, {"num": 254, "en": "brain", "zh": "大腦"}, {"num": 255, "en": "coal", "zh": "煤炭"}, {"num": 256, "en": "device", "zh": "設備 / 裝置"}, {"num": 257, "en": "earthquake", "zh": "地震"}, {"num": 258, "en": "typhoon", "zh": "颱風"}, {"num": 259, "en": "extinct", "zh": "滅絕的 / 絕種的"}, {"num": 260, "en": "generator", "zh": "發電機"}, {"num": 261, "en": "heat", "zh": "熱能 / 加熱"}, {"num": 262, "en": "light", "zh": "光 / 輕的"}, {"num": 263, "en": "outcome", "zh": "結果 / 產出"}, {"num": 264, "en": "pollutant", "zh": "污染物"}, {"num": 265, "en": "potential", "zh": "潛力 / 潛在的"}, {"num": 266, "en": "respond", "zh": "回應 / 回答"}, {"num": 267, "en": "sample", "zh": "樣品 / 樣本"}, {"num": 268, "en": "sedimentary", "zh": "沉積的"}, {"num": 269, "en": "simulate", "zh": "模擬 / 模仿"}, {"num": 270, "en": "structure", "zh": "結構 / 建築物"}, {"num": 271, "en": "trench", "zh": "海溝 / 壕溝"}, {"num": 272, "en": "transverse", "zh": "橫向的 / 切向的"}, {"num": 273, "en": "turbine", "zh": "渦輪機"}, {"num": 274, "en": "weathering", "zh": "風化作用"}, {"num": 275, "en": "deposition", "zh": "沉積作用"}],
+      "276 ~ 300": [{"num": 276, "en": "amplitude", "zh": "振幅 / 豐富"}, {"num": 277, "en": "connect", "zh": "連接 / 連結"}, {"num": 278, "en": "electric", "zh": "電力的 / 電氣的"}, {"num": 279, "en": "eruption", "zh": "噴發 / 爆發"}, {"num": 280, "en": "digital", "zh": "數位的"}, {"num": 281, "en": "horizontal", "zh": "水平的"}, {"num": 282, "en": "function", "zh": "功能 / 運作"}, {"num": 283, "en": "receiver", "zh": "接收器"}, {"num": 284, "en": "primary", "zh": "主要的 / 初級的"}, {"num": 285, "en": "sepal", "zh": "花萼"}, {"num": 286, "en": "classify", "zh": "分類"}, {"num": 287, "en": "emission", "zh": "排放 / 散發"}, {"num": 288, "en": "extend", "zh": "延伸 / 擴展"}, {"num": 289, "en": "feature", "zh": "特徵 / 特色"}, {"num": 290, "en": "impact", "zh": "衝擊 / 影響"}, {"num": 291, "en": "liver", "zh": "肝臟"}, {"num": 292, "en": "pattern", "zh": "模式 / 花紋"}, {"num": 293, "en": "radiation", "zh": "輻射"}, {"num": 294, "en": "ray", "zh": "光線 / 射線"}, {"num": 295, "en": "refract", "zh": "折射"}, {"num": 296, "en": "symbol", "zh": "符號 / 象徵"}, {"num": 297, "en": "transfer", "zh": "轉移 / 傳輸"}, {"num": 298, "en": "transmitter", "zh": "發射器 / 傳送器"}, {"num": 299, "en": "uranium", "zh": "鈾"}, {"num": 300, "en": "wavelength", "zh": "波長"}]
+    };
+
+    let currentGroup = "1 ~ 25";
+    let currentWords = [];
+    let currentMode = 1;
+    let flashIndex = 0;
+    let isFlipped = false;
+
+    // Initialize Dropdown
+    const select = document.getElementById("group-select");
+    Object.keys(ALL_WORDS).forEach(key => {
+      let opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = `第 ${key} 單字`;
+      select.appendChild(opt);
+    });
+    let allOpt = document.createElement("option");
+    allOpt.value = "ALL";
+    allOpt.textContent = "🌟 全部 1 ~ 300 單字";
+    select.appendChild(allOpt);
+
+    function updateCurrentWords() {
+      if (currentGroup === "ALL") {
+        currentWords = [].concat(...Object.values(ALL_WORDS));
+      } else {
+        currentWords = ALL_WORDS[currentGroup] || [];
+      }
+    }
+
+    function changeGroup() {
+      currentGroup = document.getElementById("group-select").value;
+      updateCurrentWords();
+      flashIndex = 0;
+      loadMode();
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll(".tab-btn").forEach((btn, idx) => {
+        btn.classList.toggle("active", idx + 1 === mode);
+      });
+      loadMode();
+    }
+
+    function speak(text, e) {
+      if (e) e.stopPropagation();
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function shuffle(array) {
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    function loadMode() {
+      const container = document.getElementById("game-container");
+      container.innerHTML = "";
+      if (currentWords.length === 0) return;
+
+      if (currentMode === 1) renderFlashcard(container);
+      else if (currentMode === 2) renderQuiz(container);
+      else if (currentMode === 3) renderSpelling(container);
+      else if (currentMode === 4) renderMatchGame(container);
+      else if (currentMode === 5) renderMemoryGame(container);
+    }
+
+    /* --- Mode 1: Flashcard --- */
+    function renderFlashcard(container) {
+      const item = currentWords[flashIndex];
+      isFlipped = false;
+      container.innerHTML = `
+        <div class="flashcard" onclick="toggleCard()">
+          <span class="num-tag">#${item.num}</span>
+          <button class="speaker-btn" onclick="speak('${item.en}', event)">🔊</button>
+          <div class="word">${item.en}</div>
+          <div class="translation" id="card-zh" style="display:none;">${item.zh}</div>
+        </div>
+        <div style="margin-top: 20px; display: flex; gap: 15px;">
+          <button onclick="prevCard()">⬅️ 上一個</button>
+          <span style="align-self: center; font-weight: bold;">${flashIndex + 1} / ${currentWords.length}</span>
+          <button onclick="nextCard()">下一個 ➡️</button>
+        </div>
+      `;
+      speak(item.en);
+    }
+
+    function toggleCard() {
+      const zh = document.getElementById("card-zh");
+      if (zh) {
+        isFlipped = !isFlipped;
+        zh.style.display = isFlipped ? "block" : "none";
+      }
+    }
+    function prevCard() {
+      flashIndex = (flashIndex - 1 + currentWords.length) % currentWords.length;
+      renderFlashcard(document.getElementById("game-container"));
+    }
+    function nextCard() {
+      flashIndex = (flashIndex + 1) % currentWords.length;
+      renderFlashcard(document.getElementById("game-container"));
+    }
+
+    /* --- Mode 2: Quiz --- */
+    let quizScore = 0;
+    let quizIndex = 0;
+    let quizList = [];
+
+    function renderQuiz(container) {
+      quizList = shuffle(currentWords);
+      quizIndex = 0;
+      quizScore = 0;
+      showQuizQuestion(container);
+    }
+
+    function showQuizQuestion(container) {
+      if (quizIndex >= quizList.length) {
+        container.innerHTML = `
+          <div class="quiz-card">
+            <h2>🎉 測驗完成！</h2>
+            <p class="score-board">最終得分：${quizScore} / ${quizList.length}</p>
+            <button onclick="renderQuiz(document.getElementById('game-container'))">再試一次 🔄</button>
+          </div>
+        `;
+        return;
+      }
+
+      const q = quizList[quizIndex];
+      let options = [q];
+      while (options.length < 4 && options.length < currentWords.length) {
+        let rand = currentWords[Math.floor(Math.random() * currentWords.length)];
+        if (!options.includes(rand)) options.push(rand);
+      }
+      options = shuffle(options);
+
+      container.innerHTML = `
+        <div class="quiz-card">
+          <div class="score-board">進度：${quizIndex + 1} / ${quizList.length} | 得分：${quizScore}</div>
+          <h2 style="font-size: 2.2rem; margin: 10px 0; color: #1e1b4b;">${q.en}</h2>
+          <button style="margin-bottom: 15px;" onclick="speak('${q.en}')">🔊 聽發音</button>
+          <div class="quiz-options">
+            ${options.map(opt => `<button class="option-btn" onclick="checkQuiz('${opt.zh}', '${q.zh}')">${opt.zh}</button>`).join('')}
+          </div>
+        </div>
+      `;
+      speak(q.en);
+    }
+
+    function checkQuiz(selected, correct) {
+      if (selected === correct) {
+        alert("✨ 答對了！Great job!");
+        quizScore++;
+      } else {
+        alert(`❌ 答錯囉！正確答案是：${correct}`);
+      }
+      quizIndex++;
+      showQuizQuestion(document.getElementById("game-container"));
+    }
+
+    /* --- Mode 3: Spelling --- */
+    let spellIndex = 0;
+    let spellList = [];
+
+    function renderSpelling(container) {
+      spellList = shuffle(currentWords);
+      spellIndex = 0;
+      showSpellingQuestion(container);
+    }
+
+    function showSpellingQuestion(container) {
+      if (spellIndex >= spellList.length) {
+        container.innerHTML = `
+          <div class="spelling-box">
+            <h2>🎉 拼字大考驗完成！</h2>
+            <button onclick="renderSpelling(document.getElementById('game-container'))">再練一次 🔄</button>
+          </div>
+        `;
+        return;
+      }
+      const q = spellList[spellIndex];
+      container.innerHTML = `
+        <div class="spelling-box">
+          <h3>請看中文拼出英文單字：</h3>
+          <h2 style="color: #059669; font-size: 1.8rem; margin: 15px 0;">${q.zh}</h2>
+          <button onclick="speak('${q.en}')">🔊 聽提示音</button><br>
+          <input type="text" id="spell-input" class="spelling-input" placeholder="在此輸入英文" autocomplete="off" autofocus onkeyup="if(event.key==='Enter') checkSpelling('${q.en}')"><br>
+          <button onclick="checkSpelling('${q.en}')">送出答案</button>
+          <p id="spell-msg" style="margin-top: 15px; font-weight: bold;"></p>
+        </div>
+      `;
+    }
+
+    function checkSpelling(correct) {
+      const input = document.getElementById("spell-input").value.trim().toLowerCase();
+      const msg = document.getElementById("spell-msg");
+      if (input === correct.toLowerCase()) {
+        msg.style.color = "#10b981";
+        msg.textContent = "🎉 恭喜！拼寫完全正確！";
+        speak(correct);
+        setTimeout(() => {
+          spellIndex++;
+          showSpellingQuestion(document.getElementById("game-container"));
+        }, 1200);
+      } else {
+        msg.style.color = "#ef4444";
+        msg.textContent = `❌ 再試試看！提示：第一個字母是 '${correct[0]}'`;
+      }
+    }
+
+    /* --- Mode 4: Match Game --- */
+    let selectedMatch = null;
+
+    function renderMatchGame(container) {
+      let sample = shuffle(currentWords).slice(0, 6);
+      let left = shuffle(sample);
+      let right = shuffle(sample);
+      selectedMatch = null;
+
+      container.innerHTML = `
+        <div style="width: 100%; max-width: 600px; text-align: center;">
+          <h3>點擊英文單字，再點擊對應的中文配對：</h3>
+          <div class="match-grid">
+            <div id="left-col" style="display:flex; flex-direction:column; gap:10px;">
+              ${left.map(w => `<div class="match-item" data-type="en" data-val="${w.en}" onclick="selectMatch(this)">${w.en}</div>`).join('')}
+            </div>
+            <div id="right-col" style="display:flex; flex-direction:column; gap:10px;">
+              ${right.map(w => `<div class="match-item" data-type="zh" data-val="${w.en}" onclick="selectMatch(this)">${w.zh}</div>`).join('')}
+            </div>
+          </div>
+          <button style="margin-top:20px;" onclick="renderMatchGame(document.getElementById('game-container'))">換一批單字 🔄</button>
+        </div>
+      `;
+    }
+
+    function selectMatch(el) {
+      if (el.classList.contains("matched")) return;
+
+      if (!selectedMatch) {
+        selectedMatch = el;
+        el.classList.add("selected");
+        if (el.dataset.type === "en") speak(el.dataset.val);
+      } else {
+        if (selectedMatch === el) {
+          el.classList.remove("selected");
+          selectedMatch = null;
+          return;
+        }
+
+        if (selectedMatch.dataset.type !== el.dataset.type) {
+          if (selectedMatch.dataset.val === el.dataset.val) {
+            selectedMatch.classList.add("matched");
+            el.classList.add("matched");
+            selectedMatch.classList.remove("selected");
+            selectedMatch = null;
+          } else {
+            el.classList.add("selected");
+            setTimeout(() => {
+              selectedMatch.classList.remove("selected");
+              el.classList.remove("selected");
+              selectedMatch = null;
+            }, 500);
+          }
+        } else {
+          selectedMatch.classList.remove("selected");
+          selectedMatch = el;
+          el.classList.add("selected");
+          if (el.dataset.type === "en") speak(el.dataset.val);
+        }
+      }
+    }
+
+    /* --- Mode 5: Memory Flip Game --- */
+    let memoryCards = [];
+    let flippedCards = [];
+
+    function renderMemoryGame(container) {
+      let sample = shuffle(currentWords).slice(0, 6);
+      let cards = [];
+      sample.forEach((w, idx) => {
+        cards.push({ id: idx, text: w.en, type: 'en', val: w.en });
+        cards.push({ id: idx, text: w.zh, type: 'zh', val: w.en });
+      });
+      memoryCards = shuffle(cards);
+      flippedCards = [];
+
+      container.innerHTML = `
+        <div style="text-align:center;">
+          <h3>翻牌記憶對對碰（翻出對應的英文與中文）：</h3>
+          <div class="memory-grid">
+            ${memoryCards.map((c, i) => `<div class="memory-card" id="mem-${i}" onclick="flipMemoryCard(${i})">❓</div>`).join('')}
+          </div>
+          <button style="margin-top:20px;" onclick="renderMemoryGame(document.getElementById('game-container'))">重新開始 🔄</button>
+        </div>
+      `;
+    }
+
+    function flipMemoryCard(index) {
+      if (flippedCards.length >= 2) return;
+      const cardEl = document.getElementById(`mem-${index}`);
+      const data = memoryCards[index];
+
+      if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
+
+      cardEl.classList.add("flipped");
+      cardEl.textContent = data.text;
+      if (data.type === 'en') speak(data.text);
+      flippedCards.push({ index, data });
+
+      if (flippedCards.length === 2) {
+        const [c1, c2] = flippedCards;
+        if (c1.data.id === c2.data.id) {
+          setTimeout(() => {
+            document.getElementById(`mem-${c1.index}`).classList.add("matched");
+            document.getElementById(`mem-${c2.index}`).classList.add("matched");
+            flippedCards = [];
+          }, 600);
+        } else {
+          setTimeout(() => {
+            document.getElementById(`mem-${c1.index}`).classList.remove("flipped");
+            document.getElementById(`mem-${c1.index}`).textContent = "❓";
+            document.getElementById(`mem-${c2.index}`).classList.remove("flipped");
+            document.getElementById(`mem-${c2.index}`).textContent = "❓";
+            flippedCards = [];
+          }, 1000);
+        }
+      }
+    }
+
+    // App Initialization
+    updateCurrentWords();
+    loadMode();
   </script>
 </body>
 </html>
